@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>EAT BETTER LIVE BETTER</title>
+	<link rel="stylesheet" href="stylesheets/styles.css" type="text/css" />
+	<!--[if lt IE 9]>
+		<script type="text/javascript" src="javascripts/html5shiv.js"></script>
+	<![endif]-->
+</head>
+<body>
+	<div id="wrapper">
+		<header>
+			<h1>EAT BETTER LIVE BETTER</h1>
+		</header>
+		<section id="page">
+			<h2>What do you want to prepare next holiday?</h2>
+			<div id="searchBox">
+				<form action="" id="recipeSearchForm" name="recipeSearchForm">
+					<input type="search" id="recipeSearchInput" name="recipeSearchInput" placeholder="Search for a recipe" />
+					<button id="recipeSearchSubmit" title="Click to Search">&rarr;</button>
+				</form>
+			</div>
+		</section>
+		<section id="recipeResults">
+			<nav id="pagination"></nav>
+			<ul id="resultsGrid"></ul>
+		</section>
+	</div>
+	<script	type="text/javascript" src="javascripts/jquery-1.11.1.min.js" ></script>
+	<script	type="text/javascript" src="javascripts/handlebars.v1.3.0.js" ></script>
+	<script	type="text/javascript" src="javascripts/jquery.jscroll.min.js" ></script>
+	<script	type="text/javascript" src="javascripts/scripts.js" ></script>
+	<script type="text/javascript">
+		Handlebars.registerHelper('increment', function(value) {
+			return parseInt(value) + 1;
+		});
+
+		Handlebars.registerHelper('division', function(arg1, arg2) {
+			return parseInt(arg1) / parseInt(arg2);
+		});
+
+		$(document).ready(function() {
+			infiniteScroll ("#resultsGrid");
+		});
+	</script>
+
+	<!-- Handlebars templates -->
+	<script	id="paginationTmpl" type="x-tmpl-mustache">
+		Search Results: <span>{{resultCount}}</span> results found.
+	</script>
+
+	<script	id="recipeResultsTmpl" type="text/x-handlebars-template">
+		{{#results}}
+		<li>
+			<a class="get-recipe" href="/getrecipe/{{RecipeID}}">
+				<img class="item-image" src="{{ImageURL120}}" alt="{{Title}}">
+				<p>{{Title}}</p>
+				<img class="rating-image" src="{{StarRatingIMG}}" alt="{{StarRating}} star rating" title="{{StarRating}} star rating" />
+			</a>
+		</li>
+		{{/results}}
+		<div id="loader" class="hidden"></div>
+		<a class="next-page hidden" href="/getrecipes/{{searchTerm}}/{{increment pg}}/{{rpp}}">next page</a>
+	</script>
+
+	<script id="recipeOverlayTmpl" type="text/x-handlebars-template">
+		<div id="recipeOverlay">
+			<div class="left-col">
+				<div class="wrap">
+					<a class="image" href="{{WebURL}}" target="_blank"><img src="{{ImageURL}}" alt="{{Title}}" /></a>
+					<div id="recipeInfo">
+						<a class="title" href="{{WebURL}}">{{Title}}</a>
+						<p class="description">{{Description}}</p>
+						<p class="instructions">{{{Instructions}}}</p>
+						{{#if Cuisine}}
+							<p class="cuisine"><strong>Cuisine</strong>: {{Cuisine}}</p>
+						{{/if}}
+
+						{{#if Category}}
+						<p class="category"><strong>Category</strong>: 
+							<span>{{Category}}</span>
+							<span class="separator">></span>
+							<span>{{Subcategory}}</span>
+						</p>
+						{{/if}}
+					</div>
+				</div>
+			</div>
+			<div class="right-col">
+				<div class="wrap">
+					<div id="ingredientInfo">
+						<h3>Ingredients</h3>
+						<table border="0" cellspacing="0" cellpadding="0" width="100%" >
+							<thead>
+								<tr>
+									<th width="50px" align="center">#</th>
+									<th>Name</th>
+									<th>Quantity</th>
+									<th width="30px"><a href="javascript:void(0)" class="action-btn add" >&plus;</a></th>
+								</tr>
+							</thead>
+							<tbody>
+								{{#Ingredients}}
+								<tr>
+									<td>{{increment @index}}</td>
+									<td><input value="{{{Name}}}" type="text" name="ing-name" class="txtbox ing-name" /></td>
+									<td><input value="{{Quantity}} {{Unit}}" type="text" name="ing-qty-unit" class="txtbox ing-qty-unit" /></td>
+									<td><a href="javascript:void(0)" class="action-btn remove" >&ndash;</a></td>
+								</tr>
+								{{/Ingredients}}
+							</tbody>
+						</table>
+					</div>
+					<button type="button" id="fetch-nutrition">Fetch Nutrition</button>
+					<div id="nutrientInfoWrapper"></div>
+				</div>
+			</div>
+		</div>		
+	</script>
+
+	<script	id="recipeNavigationTmpl" type="text/x-handlebars-template">
+		<div id="recipeNavigation">
+			<div class="button-set">
+				<a href="javascript:void(0)" class="first">&laquo;</a>
+				<a href="javascript:void(0)" class="prev">&lsaquo;</a>
+				<a href="javascript:void(0)" class="next">&rsaquo;</a>
+				<a href="javascript:void(0)" class="last">&raquo;</a>
+			</div>
+			<div class="button-set">
+				<a href="javascript:removeRecipeOverlay()" class="close">&times;</a>
+			</div>
+		</div>
+	</script>
+
+	<script	id= "nutrientInfoTmpl" type="text/x-handlebars-template">
+		<div id="nutrientInfo">
+			<h3>Nutrition Information</h3>
+			<div class="nutrient-head">
+				<div class="sec-1">
+					<div class="nutquantity">{{calories}}</div>
+					<div class="nutmetric">Calories</div>
+				</div>
+				<div class="sec-2">
+					<div class="nutquantity">{{division calories yield}}</div>
+					<div class="nutmetric">Calories / Serving</div>
+				</div>
+				<div class="sec-3">
+					<div class="nutquantity">{{yield}}</div>
+					<div class="nutmetric">Serving</div>
+				</div>
+			</div>
+			<div class="nutrient-details">
+				<ul id="totalNutrients">
+					<li class="head">Total Nutrients</li>
+					<li class="subhead">
+						<div class="nutlabel">Label</div>
+						<div class="nutquantity">Quantity</div>
+					</li>
+					{{#totalNutrients}}
+					<li>
+						<div class="nutlabel">{{label}}</div>
+						<div class="nutquantity">{{quantity}} {{unit}}</div>
+					</li>
+					{{/totalNutrients}}
+				</ul>
+				<ul id="totalDaily">
+					<li class="head">Total Daily Value</li>
+					<li class="subhead">
+						<div class="nutlabel">Label</div>
+						<div class="nutquantity">Quantity</div>
+					</li>
+					{{#totalDaily}}
+					<li>
+						<div class="nutlabel">{{label}}</div>
+						<div class="nutquantity">{{quantity}} {{unit}}</div>
+					</li>
+					{{/totalDaily}}
+				</ul>
+			</div>
+			<div class="nutrient-labels">
+				<ul id="dietLabels">
+					<li class="head">Nutrients Labels</li>
+					{{#dietLabels}}
+					<li>{{.}}</li>
+					{{/dietLabels}}
+				</ul>
+				<ul id="healthLabels">
+					<li class="head">Health Labels</li>
+					{{#healthLabels}}
+					<li>{{.}}</li>
+					{{/healthLabels}}
+				</ul>
+			</div>
+		</div>
+	</script>
+</body>
+</html>			

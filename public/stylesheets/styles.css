@@ -1,0 +1,381 @@
+@font-face {
+	font-family: 'exoregular';
+	src: url('../fonts/exo-regular-webfont.eot');
+	src: url('../fonts/exo-regular-webfont.eot?#iefix') format('embedded-opentype'),
+		 url('../fonts/exo-regular-webfont.woff') format('woff'),
+		 url('../fonts/exo-regular-webfont.ttf') format('truetype'),
+		 url('../fonts/exo-regular-webfont.svg#exoregular') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'nobileregular';
+	src: url('../fonts/nobile-regular-webfont.eot');
+	src: url('../fonts/nobile-regular-webfont.eot?#iefix') format('embedded-opentype'),
+		 url('../fonts/nobile-regular-webfont.woff') format('woff'),
+		 url('../fonts/nobile-regular-webfont.ttf') format('truetype'),
+		 url('../fonts/nobile-regular-webfont.svg#nobileregular') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'source_sans_proregular';
+	src: url('../fonts/sourcesanspro-regular-webfont.eot');
+	src: url('../fonts/sourcesanspro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+		 url('../fonts/sourcesanspro-regular-webfont.woff') format('woff'),
+		 url('../fonts/sourcesanspro-regular-webfont.ttf') format('truetype'),
+		 url('../fonts/sourcesanspro-regular-webfont.svg#source_sans_proregular') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+    font-family: 'deliciousroman';
+    src: url('../fonts/delicious-roman-webfont.eot');
+    src: url('../fonts/delicious-roman-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/delicious-roman-webfont.woff') format('woff'),
+         url('../fonts/delicious-roman-webfont.ttf') format('truetype'),
+         url('../fonts/delicious-roman-webfont.svg#deliciousroman') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'open_sansregular';
+    src: url('../fonts/opensans-regular-webfont.eot');
+    src: url('../fonts/opensans-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/opensans-regular-webfont.woff') format('woff'),
+         url('../fonts/opensans-regular-webfont.ttf') format('truetype'),
+         url('../fonts/opensans-regular-webfont.svg#open_sansregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+* {
+	margin: 0;
+	padding: 0;
+	font-family: "open_sansregular";
+}
+header, section, nav {
+	display: block;
+}
+body {
+	font-size: 12px;
+	color: #333;
+	line-height: 20px;
+}
+.hidden {
+	display: none;
+}
+a {
+	text-decoration: none;
+	color: #13a4e0;
+}
+header {
+	text-align: center;
+	border-bottom: 6px solid #13a4e0;
+	padding: 20px 0;
+}
+#page h2 {
+	text-align: center;
+	margin: 30px 0 0;
+	font-weight: normal;
+}
+#page #searchBox {
+	width: 1000px;
+	margin: 20px auto;
+	border: 2px solid #ddd;
+}
+#searchBox #recipeSearchInput {
+	font-size: 30px;
+	border: none;
+	padding: 5px 10px;
+	width: calc(100% - 83px);
+}
+#searchBox #recipeSearchSubmit {
+	font-size: 30px;
+	border: none;
+	padding: 5px;
+	cursor: pointer;
+	background: #f4aa0a;
+	width: 75px;
+	text-align: center;
+	float: right;
+}
+#recipeResults {
+	width: 1000px;
+	margin: 20px auto;
+}
+#recipeResults li {
+	list-style: none;
+	display: inline-block;
+	text-align: center;
+	margin: 10px 15px 10px 0px;
+	background: #eee;
+	vertical-align: top;
+	border-bottom: 2px solid #ccc;
+	position: relative;
+}
+#recipeResults li img.item-image {
+	padding: 5px;
+	background: #fff;
+	border: 1px solid #ddd;
+	width: 120px;
+	height: 120px;
+}
+#recipeResults li img.rating-image {
+	position: absolute;
+	bottom: 0;
+	top: 200px;
+	left: 0;
+	right: 0;
+	margin: auto;
+}
+#recipeResults li .get-recipe {
+	padding: 10px;
+	width: 160px;
+	height: 210px;
+	text-decoration: none;
+	display: block;
+	-webkit-transition: box-shadow .3s ease;
+	-moz-transition: box-shadow .3s ease;
+	-ms-transition: box-shadow .3s ease;
+	-o-transition: box-shadow .3s ease;
+	transition: box-shadow .3s ease;
+}
+#recipeResults li:hover .get-recipe {
+	box-shadow: 0 0 3px #333;
+}
+#recipeResults li p {
+	font-size: 14px;
+	height: 60px;
+	overflow: hidden;
+}
+#curtain {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,.7);
+	top: 0;
+	left: 0;
+}
+#recipeOverlay {
+    position: fixed;
+    width: 90%;
+    height: 90%;
+    background: #fff;
+    top: 5%;
+    left: 5%;
+}
+#recipeOverlay .left-col, #recipeOverlay .right-col {
+    display: inline-block;
+    width: 40%;
+    vertical-align: top;
+    height: 100%;
+    overflow-y: auto;
+}
+#recipeOverlay .left-col img {
+	width: 360px;
+	border: 1px solid #ddd;
+	padding: 5px;
+	background: #fff;
+	border-radius: 3px 40px;
+}
+#recipeOverlay .left-col p {
+	padding: 5px 0;
+}
+#recipeOverlay .left-col p .separator {
+	color: #999;
+}
+#recipeOverlay .left-col .title {
+	font-size: 20px;
+	display: block;
+}
+#recipeOverlay .right-col {
+    width: 60%;
+    margin-left: -4px;
+    background: #f5f5f5;
+}
+#recipeOverlay .right-col table th, #recipeOverlay .right-col table td {
+	background: #eee;
+	border-right: 1px solid #fff;
+	border-bottom: 1px solid #eee;
+	padding: 4px;
+}
+#recipeOverlay .right-col table td {
+	background: #fff;
+}
+#recipeOverlay .right-col table td:first-child {
+	text-align:center
+}
+#recipeOverlay .right-col table .action-btn {
+	display: block;
+	width: 22px;
+	background: #def;
+	text-align: center;
+	font-size: 14px;
+	font-weight: bold;
+	color: #000;
+}
+.wrap {
+	margin: 20px;
+}
+#ingredientInfo input.ing-name {
+	display: block;
+	border: none;
+	width: 100%;
+}
+#ingredientInfo input.ing-qty {
+	border: none;
+	width: 50px;	
+}
+#fetch-nutrition {
+	margin: 10px auto;
+	display: block;
+	padding: 5px 15px;
+	border: none;
+	background: #13a4e0;
+	color: #fff;
+	border-radius: 3px;
+	font-size: 18px;
+}
+#pagination span {
+	font-weight: bold;
+	font-size: 30px;
+	color: #13a4e0;
+}
+#recipeNavigation {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	text-align: center;
+	margin: 0 auto;	
+	width: 280px;
+	-webkit-transition: all .3s ease;
+	-moz-transition: all .3s ease;
+	-ms-transition: all .3s ease;
+	-o-transition: all .3s ease;
+	transition: all .3s ease;
+}
+#recipeNavigation.hover {
+	opacity: .3;
+	z-index: 1;
+}
+#recipeNavigation .button-set {
+	background: -webkit-linear-gradient(#eee, #bbb); /* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(#eee, #bbb); /* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(#eee, #bbb); /* For Firefox 3.6 to 15 */
+	background: linear-gradient(#eee, #bbb); /* Standard syntax */
+	border-radius: 3px 3px 0 0;
+	margin: 0 10px;
+	height: 40px;
+	float: left;
+	box-shadow: 0 0px 20px #000;
+}
+#recipeNavigation .button-set a {
+	font-size: 32px;
+	color: #333;
+	border-left: 1px solid #fff;
+	border-right: 1px solid #aaa;
+	padding: 7px 0 13px;
+	display: inline-block;
+	float: left;
+	text-align: center;
+	width: 45px;
+	box-sizing: border-box;
+}
+#recipeNavigation .button-set a.close {
+	padding: 9px 0 11px;
+}
+#recipeNavigation .button-set a:first-child {
+	border-left: none;
+}
+#recipeNavigation .button-set a:last-child {
+	border-right: none;
+}
+#loader-curtain {
+  	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";/* IE 8 */
+	filter: alpha(opacity=80);/* IE 5-7 */
+	-moz-opacity: 0.8;/* Netscape */
+	-khtml-opacity: 0.8;/* Safari 1.x */
+	opacity: 0.8;	/* Good browsers */
+	background: #000;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	z-index: 10000;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+#loader {
+	width: 200px;
+	height: 60px;
+	border: 1px solid #ccc;
+	background: #fff url("/images/294.gif") no-repeat 50% 50%;
+	box-shadow: 0 0 30px #111;
+	z-index: 10001;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: auto;
+}
+#nutrientInfo {
+	background: #fff;
+	padding: 10px;
+	border: 3px solid #13a4e0;
+	margin: 10px 0;
+	box-sizing: border-box;
+	border-radius: 3px;
+}
+#nutrientInfo h3 span {
+	font-size: 14px;
+}
+#nutrientInfo .nutrient-head {
+	padding: 10px 0;
+	border-bottom: 1px solid #f4aa0a;
+}
+#nutrientInfo .nutrient-head > div {
+	display: inline-block;
+	width: 32%;
+	text-align: center;
+}
+#nutrientInfo .nutrient-head div .nutquantity {
+	font-size: 20px;
+	color: #f4aa0a;
+}
+#nutrientInfo .nutrient-head div .nutmetric {
+	text-transform: uppercase;
+}
+#nutrientInfo > div {
+	display: table;
+	width: 100%;
+	vertical-align: top;
+	margin-top: 10px;
+}
+#nutrientInfo ul {
+	display: table-cell;
+	width: 50%;
+	list-style: none;
+	border: 2px solid #fff;
+	vertical-align: top;
+}
+#nutrientInfo ul li {
+	border-bottom: 1px solid #eee;
+	padding: 2px 3px;
+}
+#nutrientInfo ul > li.head {
+	font-weight: bold;
+	background: #eee;
+}
+#nutrientInfo ul > li.subhead {
+	font-weight: bold;
+}
+#nutrientInfo ul li div {
+	display: inline-block;
+	vertical-align: top;
+}
+#nutrientInfo ul li div.nutlabel {
+	width: 40%;
+}
