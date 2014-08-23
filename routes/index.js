@@ -178,6 +178,7 @@ var healthProp = {DAIRY_FREE : 'No dairy; no lactose'
 				, GLUTEN_FREE : 'Free of gluten containing foods'
 				, EGG_FREE : 'No eggs or products containing eggs'
 				, LOW_FAT_ABS : 'Less than 3g of fat per serving'
+				, VEGETARIAN : 'No meat, poultry, or fish'
 				};
 
 

@@ -25,7 +25,23 @@
 			<nav id="pagination"></nav>
 			<ul id="resultsGrid"></ul>
 		</section>
+		<select id="metricDropDownDummy" class="hidden">
+			<option value=""> </option>
+			<option value="teaspoon">teaspoon</option>
+			<option value="tablespoon">tablespoon</option>
+			<option value="cup">cup</option>
+			<option value="ounces">ounces</option>
+			<option value="pint">pint</option>
+			<option value="cloves">cloves</option>
+			<option value="ml">ml</option>
+			<option value="kg">kg</option>
+			<option value="large">large</option>
+			<option value="medium">medium</option>
+			<option value="whole">whole</option>
+		</select>
 	</div>
+	<footer>&copy; Triveral For Haxter 2014</footer>
+
 	<script	type="text/javascript" src="javascripts/jquery-1.11.1.min.js" ></script>
 	<script	type="text/javascript" src="javascripts/handlebars.v1.3.0.js" ></script>
 	<script	type="text/javascript" src="javascripts/jquery.jscroll.min.js" ></script>
@@ -36,7 +52,11 @@
 		});
 
 		Handlebars.registerHelper('division', function(arg1, arg2) {
-			return parseInt(arg1) / parseInt(arg2);
+			return Math.floor(parseInt(arg1) / parseInt(arg2));
+		});
+
+		Handlebars.registerHelper('round', function(arg1) {
+			return Math.floor(arg1);
 		});
 
 		$(document).ready(function() {
@@ -51,11 +71,13 @@
 
 	<script	id="recipeResultsTmpl" type="text/x-handlebars-template">
 		{{#results}}
-		<li>
+		<li id="recipe_{{RecipeID}}">
 			<a class="get-recipe" href="/getrecipe/{{RecipeID}}">
 				<img class="item-image" src="{{ImageURL120}}" alt="{{Title}}">
-				<p>{{Title}}</p>
-				<img class="rating-image" src="{{StarRatingIMG}}" alt="{{StarRating}} star rating" title="{{StarRating}} star rating" />
+				<div class="recipeInfo">
+					<p>{{Title}}</p>
+					<img class="rating-image" src="{{StarRatingIMG}}" alt="{{StarRating}} star rating" title="{{StarRating}} star rating" />
+				</div>
 			</a>
 		</li>
 		{{/results}}
@@ -64,13 +86,15 @@
 	</script>
 
 	<script id="recipeOverlayTmpl" type="text/x-handlebars-template">
-		<div id="recipeOverlay">
+		<div id="recipeOverlay" data-recipeid="{{RecipeID}}">
+			<a href="javascript:removeRecipeOverlay()" class="close">&times;</a>
 			<div class="left-col">
 				<div class="wrap">
 					<a class="image" href="{{WebURL}}" target="_blank"><img src="{{ImageURL}}" alt="{{Title}}" /></a>
 					<div id="recipeInfo">
 						<a class="title" href="{{WebURL}}">{{Title}}</a>
 						<p class="description">{{Description}}</p>
+						<h4>Instructions</h4>
 						<p class="instructions">{{{Instructions}}}</p>
 						{{#if Cuisine}}
 							<p class="cuisine"><strong>Cuisine</strong>: {{Cuisine}}</p>
@@ -104,8 +128,8 @@
 								<tr>
 									<td>{{increment @index}}</td>
 									<td><input value="{{{Name}}}" type="text" name="ing-name" class="txtbox ing-name" /></td>
-									<td><input value="{{Quantity}} {{Unit}}" type="text" name="ing-qty-unit" class="txtbox ing-qty-unit" /></td>
-									<td><a href="javascript:void(0)" class="action-btn remove" >&ndash;</a></td>
+									<td><input value="{{Quantity}}" type="text" name="ing-qty" class="txtbox ing-qty" /> <span class="ing-unit" >{{Unit}}</span></td>
+									<td>&nbsp;</td>
 								</tr>
 								{{/Ingredients}}
 							</tbody>
@@ -115,21 +139,11 @@
 					<div id="nutrientInfoWrapper"></div>
 				</div>
 			</div>
-		</div>		
-	</script>
-
-	<script	id="recipeNavigationTmpl" type="text/x-handlebars-template">
-		<div id="recipeNavigation">
-			<div class="button-set">
-				<a href="javascript:void(0)" class="first">&laquo;</a>
+			<div id="recipeNavigation">
 				<a href="javascript:void(0)" class="prev">&lsaquo;</a>
 				<a href="javascript:void(0)" class="next">&rsaquo;</a>
-				<a href="javascript:void(0)" class="last">&raquo;</a>
 			</div>
-			<div class="button-set">
-				<a href="javascript:removeRecipeOverlay()" class="close">&times;</a>
-			</div>
-		</div>
+		</div>		
 	</script>
 
 	<script	id= "nutrientInfoTmpl" type="text/x-handlebars-template">
@@ -137,7 +151,7 @@
 			<h3>Nutrition Information</h3>
 			<div class="nutrient-head">
 				<div class="sec-1">
-					<div class="nutquantity">{{calories}}</div>
+					<div class="nutquantity">{{round calories}}</div>
 					<div class="nutmetric">Calories</div>
 				</div>
 				<div class="sec-2">
@@ -151,7 +165,7 @@
 			</div>
 			<div class="nutrient-details">
 				<ul id="totalNutrients">
-					<li class="head">Total Nutrients</li>
+					<li class="head">Total Nutrients <span class="red">*</span></li>
 					<li class="subhead">
 						<div class="nutlabel">Label</div>
 						<div class="nutquantity">Quantity</div>
@@ -159,12 +173,12 @@
 					{{#totalNutrients}}
 					<li>
 						<div class="nutlabel">{{label}}</div>
-						<div class="nutquantity">{{quantity}} {{unit}}</div>
+						<div class="nutquantity">{{round quantity}} {{unit}}</div>
 					</li>
 					{{/totalNutrients}}
 				</ul>
 				<ul id="totalDaily">
-					<li class="head">Total Daily Value</li>
+					<li class="head">Total Daily Value <span class="red">*</span></li>
 					<li class="subhead">
 						<div class="nutlabel">Label</div>
 						<div class="nutquantity">Quantity</div>
@@ -172,7 +186,7 @@
 					{{#totalDaily}}
 					<li>
 						<div class="nutlabel">{{label}}</div>
-						<div class="nutquantity">{{quantity}} {{unit}}</div>
+						<div class="nutquantity">{{round quantity}} {{unit}}</div>
 					</li>
 					{{/totalDaily}}
 				</ul>
@@ -191,6 +205,7 @@
 					{{/healthLabels}}
 				</ul>
 			</div>
+			<p><i><span class="red">*</span> - <span>To receive additional nutrition information please check for comercial version</span></i></p>
 		</div>
 	</script>
 </body>

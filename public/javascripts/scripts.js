@@ -1,5 +1,7 @@
 // Event binding for all the functionality
-$("body").on("submit", "#recipeSearchForm", function (e) {
+var $body = $("body");
+
+$body.on("submit", "#recipeSearchForm", function (e) {
 	e.preventDefault();
 
 	var searchOptions = {
@@ -16,18 +18,18 @@ $("body").on("submit", "#recipeSearchForm", function (e) {
 	searchRecipeJson(url);
 });
 
-$("body").on("click", ".get-recipe", function (e) {
+$body.on("click", ".get-recipe", function (e) {
 	e.preventDefault();
 	var href = $(this).prop("href");
 	getRecipeJson(href);
 });
 
-$("body").on("click", "#fetch-nutrition", function (e) {
+$body.on("click", "#fetch-nutrition", function (e) {
 	e.preventDefault();
 	getNutritionInfoJson();
 });
 
-$("body").on("click", ".action-btn", function (e) {
+$body.on("click", ".action-btn", function (e) {
 	e.preventDefault();
 	var el = $(this);
 
@@ -35,17 +37,35 @@ $("body").on("click", ".action-btn", function (e) {
 		el.closest("tr").remove();
 	}
 	if (el.hasClass("add")) {
-		$("#ingredientInfo tbody").append($("#ingredientInfo tbody").find("tr:last").clone());
+		var elClone = $("#ingredientInfo tbody").find("tr:last").clone();
+		if (elClone.find(".action-btn.remove").length == 0) {
+			elClone.find("td:last").html('<a href="javascript:void(0)" class="action-btn remove" >&times;</a>');
+		}
+		elClone.find("td:first").text(parseInt(elClone.find("td:first").text()) + 1);
+		elClone.find('input').val("");
+		console.log(elClone.find('td .ing-unit'));
+		elClone.find('.ing-unit').replaceWith($("#metricDropDownDummy").clone());
+		elClone.find("#metricDropDownDummy").removeClass("hidden");
+		$("#ingredientInfo tbody").append(elClone);
 	}
 });
 
-$("body").on("mouseenter", "#recipeOverlay", function (e) {
+$body.on("click", "#recipeOverlay .prev, #recipeOverlay .next", function () {
+	var el = $(this),
+		currRecipeLI = $("#recipe_" + getRecipeId()),
+		requiredRecipeLI = (el.hasClass("prev")) ? currRecipeLI.prev() : currRecipeLI.next();
+		url = requiredRecipeLI.find(".get-recipe").prop("href");
+		
+	removeRecipeOverlay();
+	getRecipeJson(url);
+})
+/*$body.on("mouseenter", "#recipeOverlay", function (e) {
 	$("#recipeNavigation").addClass("hover")
 });
-$("body").on("mouseleave", "#recipeOverlay", function (e) {
+$body.on("mouseleave", "#recipeOverlay", function (e) {
 	$("#recipeNavigation").removeClass("hover")
 });
-
+*/
 // Service calls
 // Make an ajax call to the big oven api to get the results based on the keyword.
 function searchRecipeJson(url, renderType, lazyload) {
@@ -110,10 +130,12 @@ function getNutritionInfoJson() {
 		};
 
 	$.each(ingTR, function(index, val) {
-		var ingQty = $(val).find(".ing-qty-unit").val(),
-			ingName = $(val).find(".ing-name").val();
+		var el = $(val),
+			ingQty = el.find(".ing-qty").val(),
+			ingUnit = el.find(".ing-unit").text(),
+			ingName = el.find(".ing-name").val();
 
-		ingCollateArray.push(ingQty + " " + ingName);
+		ingCollateArray.push(ingQty + " " + ingUnit + " " + ingName);
 	});
 
 	requestObject.ingr = ingCollateArray;
@@ -139,11 +161,12 @@ function doRenderForSearch (resultsObject, renderType) {
 function doRenderForRecipe (resultsObject) {
 	createCurtain();
 	renderRecipeOverlay(resultsObject);
-	renderRecipeNavigation();
+	disableWindowScroll();
 }
 
 function doRenderForNutritionInfo (resultsObject) {
 	renderNutrientInfo(resultsObject);
+	scrollDiv();
 }
 
 // Rendering handlebars
@@ -178,15 +201,6 @@ function renderRecipeOverlay (resultsObject) {
 	$(target).append(rendered);
 }
 
-function renderRecipeNavigation () {
-	var tmpl = $("#recipeNavigationTmpl").html(),
-		target = "body",
-		template = Handlebars.compile(tmpl),
-		rendered = template({});
-
-	$(target).append(rendered);
-}
-
 function renderNutrientInfo (resultsObject) {
 	var tmpl = $("#nutrientInfoTmpl").html(),
 		target = "#nutrientInfoWrapper",
@@ -199,9 +213,9 @@ function renderNutrientInfo (resultsObject) {
 // Other functions
 function createCurtain () {
 	var curtainMarkup = '<div id="curtain"></div>';
-	$("body").append(curtainMarkup);
+	$body.append(curtainMarkup);
 
-	$("body").on("click", "#curtain", function (e) {
+	$body.on("click", "#curtain", function (e) {
 		removeRecipeOverlay();
 	});
 }
@@ -211,6 +225,7 @@ function removeRecipeOverlay () {
 		$(this).remove();
 		removeRecipeNavigation();
 		removeCurtain();
+		enableWindowScroll();
 	});
 }
 
@@ -256,6 +271,14 @@ $(document).ajaxComplete(function() {
 	hideLoader ();
 });
 
+function disableWindowScroll () {
+	$("html, body").css("overflow", "hidden");
+}
+
+function enableWindowScroll () {
+	$("html, body").css("overflow", "auto");
+}
+
 // Infinite scroll
 function infiniteScroll () {	
 	$(window).scroll(function()	{
@@ -264,4 +287,14 @@ function infiniteScroll () {
 			searchRecipeJson("", "append", true);
 	    }
 	});
+}
+function getRecipeId () {
+	return $("#recipeOverlay").attr("data-recipeid");
+}
+
+function scrollDiv () {
+	var height = $("#recipeOverlay .right-col")[0].scrollHeight;
+	$("#recipeOverlay .right-col").animate({
+		scrollTop : height	
+	}, 1000);
 }

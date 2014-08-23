@@ -59,7 +59,11 @@ header, section, nav {
 body {
 	font-size: 12px;
 	color: #333;
-	line-height: 20px;
+	padding-bottom: 60px;
+	background-image: url("/images/bg-img-4.jpg");
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	background-attachment: fixed;
 }
 .hidden {
 	display: none;
@@ -73,15 +77,21 @@ header {
 	border-bottom: 6px solid #13a4e0;
 	padding: 20px 0;
 }
+header h1 {
+	color: #69250b;
+	font-size: 30px;
+}
 #page h2 {
 	text-align: center;
 	margin: 30px 0 0;
 	font-weight: normal;
+	color: #000;
 }
 #page #searchBox {
 	width: 1000px;
 	margin: 20px auto;
 	border: 2px solid #ddd;
+	background: #fff;
 }
 #searchBox #recipeSearchInput {
 	font-size: 30px;
@@ -102,21 +112,24 @@ header {
 #recipeResults {
 	width: 1000px;
 	margin: 20px auto;
+	min-height: 350px;
 }
 #recipeResults li {
 	list-style: none;
 	display: inline-block;
 	text-align: center;
-	margin: 10px 15px 10px 0px;
-	background: #eee;
+	margin: 10px 45px 10px 0px;
+	background: #fff;
 	vertical-align: top;
 	border-bottom: 2px solid #ccc;
 	position: relative;
+	border-radius: 5px;
+	width: 150px;
+	height: 230px;
 }
 #recipeResults li img.item-image {
 	padding: 5px;
 	background: #fff;
-	border: 1px solid #ddd;
 	width: 120px;
 	height: 120px;
 }
@@ -128,10 +141,13 @@ header {
 	right: 0;
 	margin: auto;
 }
+#recipeResults li .recipeInfo {
+	background: #222;
+	border-radius: 0 0 5px 5px;
+	padding-bottom: 30px;
+}
 #recipeResults li .get-recipe {
-	padding: 10px;
-	width: 160px;
-	height: 210px;
+	padding: 10px 0;
 	text-decoration: none;
 	display: block;
 	-webkit-transition: box-shadow .3s ease;
@@ -140,13 +156,20 @@ header {
 	-o-transition: box-shadow .3s ease;
 	transition: box-shadow .3s ease;
 }
-#recipeResults li:hover .get-recipe {
-	box-shadow: 0 0 3px #333;
-}
 #recipeResults li p {
 	font-size: 14px;
 	height: 60px;
 	overflow: hidden;
+	padding: 0 3px;
+}
+footer{
+	text-align: center;
+	border-top: 1px solid #13a4e0;
+	padding: 5px;
+	position: fixed;
+	bottom:0px;
+	width: 100%;
+	background: #fff
 }
 #curtain {
 	position: fixed;
@@ -197,7 +220,9 @@ header {
 	background: #eee;
 	border-right: 1px solid #fff;
 	border-bottom: 1px solid #eee;
-	padding: 4px;
+}
+#recipeOverlay .right-col table th {
+	padding: 5px;
 }
 #recipeOverlay .right-col table td {
 	background: #fff;
@@ -207,12 +232,20 @@ header {
 }
 #recipeOverlay .right-col table .action-btn {
 	display: block;
-	width: 22px;
-	background: #def;
 	text-align: center;
-	font-size: 14px;
+	font-size: 16px;
 	font-weight: bold;
-	color: #000;
+	color: #fff;
+	border-radius: 3px;
+	box-shadow: 0 1px 1px #000;
+	background: #777;
+}
+#recipeOverlay .right-col table .action-btn.remove {
+	background: none;
+	border: 1px solid #c60;
+	color: #c00;
+	box-shadow:	none;
+	margin: 4px
 }
 .wrap {
 	margin: 20px;
@@ -221,10 +254,12 @@ header {
 	display: block;
 	border: none;
 	width: 100%;
+	padding: 4px;
 }
 #ingredientInfo input.ing-qty {
 	border: none;
 	width: 50px;	
+	padding: 4px;
 }
 #fetch-nutrition {
 	margin: 10px auto;
@@ -236,60 +271,65 @@ header {
 	border-radius: 3px;
 	font-size: 18px;
 }
+#pagination {
+	color: #fff;
+}
 #pagination span {
 	font-weight: bold;
 	font-size: 30px;
 	color: #13a4e0;
 }
-#recipeNavigation {
+#recipeOverlay #recipeNavigation {
 	position: fixed;
 	bottom: 0;
 	left: 0;
 	right: 0;
+	top: 0;
 	text-align: center;
-	margin: 0 auto;	
-	width: 280px;
+	margin: auto;	
+	width: 100%;
+	height: 40px;
 	-webkit-transition: all .3s ease;
 	-moz-transition: all .3s ease;
 	-ms-transition: all .3s ease;
 	-o-transition: all .3s ease;
 	transition: all .3s ease;
 }
-#recipeNavigation.hover {
+#recipeOverlay #recipeNavigation.hover {
 	opacity: .3;
 	z-index: 1;
 }
-#recipeNavigation .button-set {
+#recipeOverlay #recipeNavigation a {
 	background: -webkit-linear-gradient(#eee, #bbb); /* For Safari 5.1 to 6.0 */
 	background: -o-linear-gradient(#eee, #bbb); /* For Opera 11.1 to 12.0 */
 	background: -moz-linear-gradient(#eee, #bbb); /* For Firefox 3.6 to 15 */
 	background: linear-gradient(#eee, #bbb); /* Standard syntax */
-	border-radius: 3px 3px 0 0;
-	margin: 0 10px;
 	height: 40px;
-	float: left;
-	box-shadow: 0 0px 20px #000;
-}
-#recipeNavigation .button-set a {
+	width: 45px;
+	box-shadow: 0 0 5px #000;
 	font-size: 32px;
 	color: #333;
-	border-left: 1px solid #fff;
-	border-right: 1px solid #aaa;
 	padding: 7px 0 13px;
-	display: inline-block;
-	float: left;
 	text-align: center;
-	width: 45px;
 	box-sizing: border-box;
+	line-height: 20px;
 }
-#recipeNavigation .button-set a.close {
+#recipeOverlay a.prev {
+	border-radius: 0 3px 3px 0;
+	float: left;
+}
+#recipeOverlay a.next {
+	border-radius: 3px 0 0 3px;
+	float: right;
+}
+#recipeOverlay a.close {
 	padding: 9px 0 11px;
-}
-#recipeNavigation .button-set a:first-child {
-	border-left: none;
-}
-#recipeNavigation .button-set a:last-child {
-	border-right: none;
+	position: fixed;
+	top: 0;
+	right: 10px;
+	background: none;
+	color: #ccc;
+	font-size: 32px;
 }
 #loader-curtain {
   	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";/* IE 8 */
@@ -311,7 +351,7 @@ header {
 	width: 200px;
 	height: 60px;
 	border: 1px solid #ccc;
-	background: #fff url("/images/294.gif") no-repeat 50% 50%;
+	background: #fff url("/images/loader.gif") no-repeat 50% 50%;
 	box-shadow: 0 0 30px #111;
 	z-index: 10001;
 	position: fixed;
@@ -378,4 +418,7 @@ header {
 }
 #nutrientInfo ul li div.nutlabel {
 	width: 40%;
+}
+.red {
+	color: #f00;
 }
